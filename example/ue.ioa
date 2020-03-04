@@ -1,0 +1,82 @@
+<Automata>
+    <ChannelMessages>
+        <Message label="Registration_Request">
+            <Elements>
+                <Element label="Registration_type">
+                    <datatype>enumerate</datatype>
+                    <possiblevalues>initial_registration,mobility_registration,periodic_registration,emergency_registration</possiblevalues>
+                </Element>
+            </Elements>
+        </Message>
+        <Message label="Registration_Accept">
+
+        </Message>
+        <Message label="Registration_Complete">
+
+        </Message>
+        <Message label="Identity_Request">
+
+        </Message>
+        <Message label="Identity_Response">
+
+        </Message>
+    </ChannelMessages>
+    <Automaton>
+        <name>UE</name>
+        <Signatures>
+            <Inputs>
+                <Action label="Receive">Registration_Accept</Action>
+                <Action label="Receive">Identity_Request</Action>
+            </Inputs>
+            <Outputs>
+                <Action label="Send">Registration_Request</Action>
+                <Action label="Send">Registration_Complete</Action>
+                <Action label="Send">Identity_Response</Action>
+            </Outputs>
+        </Signatures>
+        <State>
+            <Variable label="Registration_type">
+                <datatype>enumerate</datatype>
+                <possiblevalues>initial_registration,mobility_registration,periodic_registration,emergency_registration</possiblevalues>
+                <initialvalue>initial_registration</initialvalue>
+            </Variable>
+            <Variable label="IMSI">
+                <datatype>integer</datatype>
+            </Variable>
+            <Variable label="Last_visited_TAI">
+                <datatype>integer</datatype>
+            </Variable>
+            <Variable label="Selected_PLMN_ID">
+                <datatype>integer</datatype>
+            </Variable>
+        </State>
+        <Transactions>
+            <Transaction>
+                <Action>
+                    <Send>Registration_Request</Send>
+                </Action>
+                <Precondition>
+                    <!--state=Registration_Request-->
+                </Precondition>
+                <Effect>
+                    <!--empty or ..-->
+                </Effect>
+            </Transaction>
+            <Transaction>
+                <Action>
+                    <Receive>Identity_Request</Receive>
+                </Action>
+                <Precondition>
+                    <!--empty-->
+                </Precondition>
+                <Effect>
+                    <!--state := Registration_Request-->
+                </Effect>
+            </Transaction>
+        </Transactions>
+    </Automaton>
+    <Automaton>
+        <Name>AMF</Name>
+    </Automaton>
+</Automata>
+
