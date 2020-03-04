@@ -1,0 +1,11 @@
+@startuml
+UE -> RAN : Registration_Request
+RAN -> New_AMF : Registration_Request
+New_AMF -> Old_AMF : Namf_Communication_UEContextTransfer
+Old_AMF -> New_AMF : Namf_Communication_UEContextTransfer response
+New_AMF -> UE : Identity Request
+UE -> New_AMF : Identity Response
+New_AMF -> Old_AMF : Namf_Communication_RegistrationCompleteNotify
+New_AMF -> UE : Identity Request
+UE -> New_AMF : Identity Response
+@enduml
