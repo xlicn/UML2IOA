@@ -1,0 +1,19 @@
+@startuml
+	!pragma teoz true
+	participant SMF order 1
+	participant PCF order 2
+	participant UDR order 3
+	participant CHF order 4
+
+	PCF --> SMF : 1a. Npcf_SMPolicyControl_UpdateNotify
+	SMF --> PCF : 1b. Npcf_SMPolicyControl_UpdateNotify response
+	SMF --> PCF : 2. Npcf_SMPolicyControl_Delete
+	PCF -> PCF : 3. Identify what PCC Rules are affected
+	SMF -> SMF : 4. Remove all PCC Rules
+	PCF -> PCF : 5. See 23.203 clause 7.3.1 steps 6-7
+	ref over PCF, UDR, CHF : 6. Nchf_SpendingLimitControl unsubscribe
+
+	PCF --> SMF : 7. Npcf_SMPolicyControl_Delete response
+	PCF --> UDR : 8. Nudr_DM_Unsubscribe
+	UDR --> PCF
+@enduml

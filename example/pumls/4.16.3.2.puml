@@ -1,0 +1,9 @@
+@startuml
+participant AMF order 1
+participant "(V-)PCF" order 2
+
+AMF -> AMF : 1. Decision to terminate the Policy Association
+AMF --> "(V-)PCF" : 2. Npcf_AMPolicyControl_Delete
+"(V-)PCF" <-- AMF : 3. Npcf_AMPolicyControl_Delete response
+AMF -> AMF : 4. Remove the Access and Mobility Control Policy
+@enduml

@@ -1,0 +1,8 @@
+@startuml
+	participant PCF order 1
+	participant CHF order 2
+
+	PCF -> PCF : 1. Decision to unsubscribe from notifications of changes in the policy counter status
+	PCF --> CHF : 2. Nchf_SpendingLimitControl_Unsubscribe
+	PCF <-- CHF : 3. Nchf_SpendingLimitControl_Unsubscribe
+@enduml

@@ -1,0 +1,87 @@
+@startuml
+!pragma teoz true
+
+participant UE order 1
+participant "(R)AN" order 2
+participant AMF order 3
+participant PCF order 4
+participant SMF order 5
+participant UPF order 6
+participant UDM order 7
+
+UE -> AMF : 1. Deregistration Request
+AMF --> SMF : 2. Nsmf_PDUSession_ReleaseSMContext Request
+SMF --> UPF : 3a. N4 Session Release Request
+UPF --> SMF : 3b. N4 Session Release Re sponse
+SMF --> AMF : 4. Nsmf_PDUSession_ReleaseSMContext Response
+SMF <-[#blue]-> PCF : 5a. SM Policy Association Termination
+note right
+{{
+	!pragma teoz true
+	participant SMF order 1
+	participant PCF order 2
+	participant UDR order 3
+	participant CHF order 4
+
+	PCF --> SMF : 1a. Npcf_SMPolicyControl_UpdateNotify
+	SMF --> PCF : 1b. Npcf_SMPolicyControl_UpdateNotify response
+	SMF --> PCF : 2. Npcf_SMPolicyControl_Delete
+	PCF -> PCF : 3. Identify what PCC Rules are affected
+	SMF -> SMF : 4. Remove all PCC Rules
+	PCF -> PCF : 5. See 23.203 clause 7.3.1 steps 6-7
+	PCF -[#blue]-> UDR : 6. Nchf_SpendingLimitControl unsubscribe
+	& UDR -[#blue]-> CHF
+	note right
+	{{{
+		participant PCF order 1
+		participant CHF order 2
+
+		PCF -> PCF : 1. Decision to unsubscribe from notifications of changes in the policy counter status
+		PCF --> CHF : 2. Nchf_SpendingLimitControl_Unsubscribe
+		PCF <-- CHF : 3. Nchf_SpendingLimitControl_Unsubscribe
+	}}}
+	end note
+
+	PCF --> SMF : 7. Npcf_SMPolicyControl_Delete response
+	PCF --> UDR : 8. Nudr_DM_Unsubscribe
+	UDR --> PCF
+}}
+end note
+
+SMF --> UDM : 5b. Nudm_SDM_Unsubscribe
+UDM --> SMF
+SMF --> UDM : 5c. Nudm_UECM_Daeregistration
+UDM --> SMF
+
+AMF <-[#blue]-> PCF : 6. AMF-initiated AM Policy Association Termination
+note right
+{{
+participant AMF order 1
+participant "(V-)PCF" order 2
+
+AMF -> AMF : 1. Decision to terminate the Policy Association
+AMF --> "(V-)PCF" : 2. Npcf_AMPolicyControl_Delete
+"(V-)PCF" --> AMF : 3. Npcf_AMPolicyControl_Delete response
+AMF -> AMF : 4. Remove the Access and Mobility Control Policy
+}}
+end note
+
+AMF <-[#blue]-> PCF : 6a. AMF initiated UE Policy Association Termination
+note right
+{{
+	participant AMF order 1
+	participant "V-PCF" order 2
+	participant "H-PCF" order 2
+
+	AMF -> AMF : 1. Decision to terminate the UE Policy Association
+	AMF --> "V-PCF" : 2. Npcf_UEPolicyControl_Delete request
+	"V-PCF" --> AMF : 3. Npcf_UEPolicyControl_Delete response
+	"V-PCF" --> "H-PCF" : 4. Npcf_UEPolicyControl_Delete request
+	"H-PCF" --> "V-PCF" : 5. Npcf_UEPolicyControl_Delete response
+}}
+end note
+
+AMF -> UE : 7. De -registration Accept
+UE <-> "(R)AN" : 8. Signalling Connection Release
+& "(R)AN" <-> AMF
+@enduml

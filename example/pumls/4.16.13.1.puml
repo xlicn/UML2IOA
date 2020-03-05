@@ -1,0 +1,11 @@
+@startuml
+participant AMF order 1
+participant "V-PCF" order 2
+participant "H-PCF" order 2
+
+AMF -> AMF : 1. Decision to terminate the UE Policy Association
+AMF --> "V-PCF" : 2. Npcf_UEPolicyControl_Delete request
+"V-PCF" --> AMF : 3. Npcf_UEPolicyControl_Delete response
+"V-PCF" --> "H-PCF" : 4. Npcf_UEPolicyControl_Delete request
+"H-PCF" --> "V-PCF" : 5. Npcf_UEPolicyControl_Delete response
+@enduml

@@ -1,0 +1,32 @@
+@startuml
+!pragma teoz true
+
+participant UE order 1
+participant "(R)AN" order 2
+participant AMF order 3
+participant PCF order 4
+participant SMF order 5
+participant UPF order 6
+participant UDM order 7
+
+UE -> AMF : 1. Deregistration Request
+AMF --> SMF : 2. Nsmf_PDUSession_ReleaseSMContext Request
+SMF --> UPF : 3a. N4 Session Release Request
+UPF --> SMF : 3b. N4 Session Release Re sponse
+SMF --> AMF : 4. Nsmf_PDUSession_ReleaseSMContext Response
+' SMF <-[#blue]-> PCF : 5a. SM Policy Association Termination
+ref over PCF, SMF : 5a. SM Policy Association Termination
+
+SMF --> UDM : 5b. Nudm_SDM_Unsubscribe
+UDM --> SMF
+SMF --> UDM : 5c. Nudm_UECM_Deregistration
+UDM --> SMF
+' AMF <-[#blue]-> PCF : 6. AMF-initiated AM Policy Association Termination
+' AMF <-[#blue]-> PCF : 6a. AMF initiated UE Policy Association Termination
+ref over AMF, PCF : 6. AMF-initiated AM Policy Association Termination
+ref over AMF, PCF : 6a. AMF initiated UE Policy Association Termination
+
+AMF -> UE : 7. De -registration Accept
+UE <-> "(R)AN" : 8. Signalling Connection Release
+& "(R)AN" <-> AMF
+@enduml
